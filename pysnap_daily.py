@@ -8,17 +8,17 @@ snapshot_prefix = 'pysnap'
 current_date = datetime.datetime.now()
 
 # Get yesterdays date for removing the old snapshot
-previous_date = current_date - datetime.timedelta(days=1)
+previous_date = current_date - datetime.timedelta(days=2)
 
 for pool in pools:
     # List existing snapshots of the specified pool
-    command = 'zfs list -t snapshot | grep {}'.format(pool)
+    command = '/usr/sbin/zfs list -t snapshot | grep {}'.format(pool)
     print('Finding existing snapshots: $ {}'.format(command))
     output = os.popen(command)
     snapshots = output.readlines()
 
     # Create the new snapshot
-    command = 'zfs snapshot -r {}@{}{}'.format(pool, snapshot_prefix, current_date.strftime(date_format))
+    command = '/usr/sbin/zfs snapshot -r {}@{}{}'.format(pool, snapshot_prefix, current_date.strftime(date_format))
     print('Creating new snapshot: $ {}'.format(command))
     os.system(command)
 
@@ -28,6 +28,6 @@ for pool in pools:
             # Get the old snapshot name
             old_snapshot = line[0:line.find(' ')]
             # Delete the old snapshot
-            command = 'zfs destroy -r {}'.format(old_snapshot)
+            command = '/usr/sbin/zfs destroy -r {}'.format(old_snapshot)
             print('Deleting old snapshot: $ {}'.format(command))
             os.system(command)
